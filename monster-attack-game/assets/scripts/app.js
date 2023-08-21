@@ -89,21 +89,27 @@ function writeToLog (e, val, monsterHealth, playerHealth) {
     monsterHealth: monsterHealth,
     playerHealth: playerHealth
   }
-  if(e === LOG_ENTRY_PLAYER_ATTACK) {
-    logEntry.target = 'MONSTER';
-  } else if(e=== LOG_ENTRY_STRONG_PLAYER_ATTACK) {
-    logBtn.target = 'MONSTER';
-  } else if (e === LOG_ENTRY_MONSTER_ATTACK) {
-    logEntry.target = 'PLAYER';
-  } else if (e=== LOG_ENTRY_PLAYER_HEAL) {
-    logEntry.target = 'PLAYER';
+
+  switch (e) {
+    case LOG_ENTRY_PLAYER_ATTACK:
+      logEntry.target = 'MONSTER';
+      break;
+    case LOG_ENTRY_STRONG_PLAYER_ATTACK:
+      logEntry.target = 'MONSTER';
+      break;
+    case LOG_ENTRY_MONSTER_ATTACK:
+      logEntry.target = 'PLAYER';
+      break;
+    case LOG_ENTRY_PLAYER_HEAL:
+      logEntry.target = 'PLAYER';
+      break;
   }
   battleLog.push(logEntry);
 }
 
 function attackMonster(mode) {
-  let maxDamage;
-  let attackLog;
+  let maxDamage = MODE_ATTACK ? ATTACK_VALUE : STRONG_ATTACK_VALUE;
+  let attackLog = MODE_ATTACK ? LOG_ENTRY_PLAYER_ATTACK : LOG_ENTRY_STRONG_PLAYER_ATTACK;
   if(mode===MODE_ATTACK) {
     maxDamage = ATTACK_VALUE;
     attackLog = LOG_ENTRY_PLAYER_ATTACK;
@@ -149,7 +155,16 @@ function healPlayerHandler () {
 }
 
 function logHandler () {
-  console.log(battleLog);
+  let i=0;
+  for (const logEntry of battleLog) { // for of is used for arrays
+    // console.log(logEntry);
+    console.log(`#${i}`)
+    for(const key in logEntry) { // for in is used for objects 
+      console.log(`${key} => ${logEntry[key]}`);
+    }
+    i++;
+  }
+  
 }
 
 attackBtn.addEventListener('click', attackHandler);
