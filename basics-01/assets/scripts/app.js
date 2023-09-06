@@ -25,38 +25,28 @@ function createAndWriteLog(operation, prevResult, operationNumber, result) {
     console.log(logEntries);
 } 
 
-function add() {
+function calculate (operation) {
     const enteredNumber = getUserNumberInput();
     const initialResult = currentResult;
-    currentResult = currentResult + enteredNumber;
-    createAndWriteOutput('+', initialResult, enteredNumber);
-    createAndWriteLog('ADD', initialResult, enteredNumber, currentResult);
+    let operator;
+    if(operation === 'ADD') {
+        currentResult = currentResult + enteredNumber;
+        operator = '+';
+    } else if ( operation === 'SUBTRACT') {
+        currentResult = currentResult - enteredNumber;
+        operator = '-';
+    } else if (operation === 'MULTIPLY') {
+        currentResult = currentResult * enteredNumber;
+        operator = '*';
+    } else if (operation === 'DIVIDE'){
+        currentResult = currentResult / enteredNumber;
+        operator = '/';
+    }
+    createAndWriteOutput(operator, initialResult, enteredNumber);
+    createAndWriteLog(operation, initialResult, enteredNumber, currentResult);
 }
 
-function subtract() {
-    const enteredNumber = getUserNumberInput();
-    const initialResult = currentResult;
-    currentResult = currentResult - enteredNumber;
-    createAndWriteOutput('-', initialResult, enteredNumber);
-    createAndWriteLog('SUBTRACT', initialResult, enteredNumber, currentResult);
-}
-
-function multiply() {
-    const enteredNumber = getUserNumberInput();
-    const initialResult = currentResult;
-    currentResult = currentResult * enteredNumber;
-    createAndWriteOutput('*', initialResult, enteredNumber);
-    createAndWriteLog('MULTIPLY', initialResult, enteredNumber, currentResult);
-}
-
-function divide() {
-    const enteredNumber = getUserNumberInput();
-    const initialResult = currentResult;
-    currentResult = currentResult / enteredNumber;
-    createAndWriteOutput('/', initialResult, enteredNumber);
-    createAndWriteLog('DIVIDE', initialResult, enteredNumber, currentResult);
-}
-addBtn.addEventListener('click', add);
-subtractBtn.addEventListener('click', subtract);
-multiplyBtn.addEventListener('click', multiply);
-divideBtn.addEventListener('click', divide);
+addBtn.addEventListener('click', calculate.bind(this, 'ADD'));
+subtractBtn.addEventListener('click', calculate.bind(this, 'SUBTRACT'));
+multiplyBtn.addEventListener('click', calculate.bind(this, 'MULTIPLY'));
+divideBtn.addEventListener('click', calculate.bind(this, 'DIVIDE'));

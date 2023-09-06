@@ -81,33 +81,38 @@ startGameBtn.addEventListener('click', function() {
 
 //not related to game
 //REST Operator
-const sumUp = (resultHander, ...numbers) => {
+const combine = (resultHander, operator, ...numbers) => {
   //function inside a function
   const validateNum = (number) => {
     return isNaN(number) ? 0: number;
   }
   let sum=0;
   for(const num of numbers) {
-    sum += validateNum(num);
+    if(operator === 'ADD') {
+      sum += validateNum(num);
+    } else {
+      sum -= validateNum(num);
+    } 
   }
   resultHander(sum);
 }
 
 //callback function
-const showResult = (result) => {
-  alert('The result after adding up all the numbers is: ' + result);
+const showResult = (messageText, result) => {
+  alert(messageText + ' ' + result);
 };
 
-sumUp(showResult, 1,10,'yiyu',13,6);
-sumUp(showResult, 1,10,5,13,6,-13,24);
-
+//bind method
+combine(showResult.bind(this, 'The result after adding up all the numbers is: '), 'ADD', 1,10,'yiyu',13,6);
+combine(showResult.bind(this, 'The result after adding up all the numbers is: '), 'ADD', 1,10,5,13,6,-13,24);
+combine(showResult.bind(this, 'The result after adding up all the numbers is: '), 'SUBTRACT', 1,4,-6,3,9,-7);
 //ES5 arguments keyword
-const subtractUp = function() {
-  let sum=0;
-  for(const num of arguments) {
-    sum -= num;
-  }
-  return sum;
-}
+// const subtractUp = function() {
+//   let sum=0;
+//   for(const num of arguments) {
+//     sum -= num;
+//   }
+//   return sum;
+// }
 
-console.log(subtractUp(1,4,-6,3,9,-7));
+// subtractUp(1,4,-6,3,9,-7);
