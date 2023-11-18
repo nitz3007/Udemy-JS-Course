@@ -3,7 +3,7 @@ const searchMovieBtn = document.getElementById('search-btn');
 
 const movies = [];
 
-const renderMovieList = () => {
+const renderMovieList = (filter = '') => {
     const movieList = document.getElementById('movie-list');
     if(movies.length === 0) {
         movieList.classList.remove('visible');
@@ -12,9 +12,15 @@ const renderMovieList = () => {
         movieList.classList.add('visible');
     }
     movieList.innerHTML = '';
-    movies.forEach((movie) => {
+    const filteredMovies = filter==='' ? movies : movies.filter(movie => movie.info.title.includes(filter)); 
+    filteredMovies.forEach((movie) => {
         const movieListItem = document.createElement('li');
-        let text = movie.info.title + ' - ';
+        const {info, ...otherProp} = movie;
+        // const {title: movieTitle} = info;
+        let {getFormattedMovieTitle} = movie;
+        getFormattedMovieTitle = getFormattedMovieTitle.bind(movie);
+        console.log(otherProp);
+        let text = getFormattedMovieTitle() + ' - ';
         for(const key in movie.info) {
             if(key !== 'title') {
                 text = text + `${key} - ${movie.info[key]}`;
@@ -32,14 +38,34 @@ const addMovieHandler = () => {
 
     const newMovie = {
         info: {
-            title,
+            set title(val) {
+                if(val.trim() === '') {
+                    this.info._title = 'DEFAULT';
+                }
+                this.info._title = val;
+            },
+            get title() {
+                console.log(this._title);
+            },
             [extraName]: extraValue,
         },
-        id: Math.random()
-    }
+        id: Math.random(),
+        getFormattedMovieTitle: function() {
+            return this.info.title.toUpperCase();
+        }
+    };
 
     movies.push(newMovie);
+    // console.log(newMovie.info.title);
     renderMovieList();
 };
 
+
+
+const searchMovieHandler = () => {
+    const searchTerm = document.getElementById('filter-title').value;
+    renderMovieList(searchTerm);
+}
+
 addMovieBtn.addEventListener('click', addMovieHandler);
+searchMovieBtn.addEventListener('click', searchMovieHandler);
