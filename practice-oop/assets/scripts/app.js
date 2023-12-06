@@ -75,6 +75,7 @@ class ProjectItem {
         this.updateProjectListsHandler = updateProjectListsFunction;
         this.connectMoreInfoBtn();
         this.connectSwitchBtn(type);
+        this.connectDrag();
     }
 
     showMoreInfoHandler() {
@@ -88,6 +89,19 @@ class ProjectItem {
         }, tooltipText, this.id);
         tooltip.attach();
         this.hasActiveTooltip = true;
+    }
+
+    //Configuring draggable element
+    connectDrag() {
+        document.getElementById(this.id).addEventListener('dragstart', (event) => {
+            event.dataTransfer.setData('text/plain', this.id);
+            event.dataTransfer.effectAllowed = 'move';
+        })
+
+        document.getElementById(this.id).addEventListener('dragend', (event) => {
+            console.log('DRAG END')
+            console.log(event)
+        })
     }
 
     connectMoreInfoBtn() {
@@ -118,7 +132,42 @@ class ProjectList {
         for(const prjItem of prjItems) {
             this.projects.push(new ProjectItem(prjItem.id, this.switchProject.bind(this), this.type));
         }
-        console.log(this.projects);
+        // console.log(this.projects);
+        this.connectDroppable();
+    }
+
+    //marking the Drop Area
+    connectDroppable() {
+        const list = document.querySelector(`#${this.type}-projects ul`);
+        list.addEventListener('dragover', (event)=>{
+            if(event.dataTransfer.types[0] === 'text/plain'){
+                list.parentElement.classList.add('droppable');
+                event.preventDefault();
+            }
+           
+        });
+        list.addEventListener('dragover', (event)=>{
+            if(event.dataTransfer.types[0] === 'text/plain'){
+                list.parentElement.classList.add('droppable');
+                event.preventDefault();
+            }
+        });
+
+        list.addEventListener('dragleave',event=>{
+            if(event.relatedTarget.closest(`#${this.type}-projects ul`) !== list) {
+                list.parentElement.classList.remove('droppable');
+            }
+        });
+
+        list.addEventListener('drop', event =>{
+            const prjId = event.dataTransfer.getData('text/plain');
+            if(this.projects.find(p=> p.id === prjId)){
+                return;
+            }
+            event.preventDefault(); //not required
+            document.getElementById(prjId).querySelector('button:last-of-type').click();
+            list.parentElement.classList.remove('droppable');
+        });
     }
 
     setSwitchHandlerFunction(switchHandlerFunction) {
@@ -126,7 +175,7 @@ class ProjectList {
     }
 
     addProject(project) {
-        console.log(project);
+        // console.log(project);
         this.projects.push(project);
         project.update(this.switchProject.bind(this), this.type);
         DOMHelper.moveElement(project.id, `#${this.type}-projects ul`);
@@ -151,10 +200,10 @@ class App {
             activeProjectsList.addProject.bind(activeProjectsList)
         );
 
-        const timerId = setTimeout(this.startAnalytics, 3000);
-        document.getElementById('stop-analytics').addEventListener('click', ()=>{
-            clearTimeout(timerId);
-        });
+        // const timerId = setTimeout(this.startAnalytics, 3000);
+        // document.getElementById('stop-analytics').addEventListener('click', ()=>{
+        //     clearTimeout(timerId);
+        // });
 
     }
 
