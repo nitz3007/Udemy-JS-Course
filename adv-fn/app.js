@@ -29,3 +29,70 @@ const calculateIncomeTaxAmount = createTaxCalculator(0.25);
 
 console.log(calculateVatAmount(100));
 console.log(calculateIncomeTaxAmount(200));
+
+function makeFn() {
+    let name='Max';
+    function displayName() {
+        console.log('Hello' + name);
+    }
+    name= 'Mini';
+    return displayName;
+}
+
+const myFunc = makeFn();
+console.log(myFunc());
+
+// function powerOf(x,n) {
+//     let result = 1;
+//     for(let i=0; i<n; i++) {
+//         result *= x;
+//     }
+//     return result;
+// }
+
+//Recursion approach:
+function powerOf(x,n) {
+    if(n===1){
+        return x;
+    }
+    return x * powerOf(x, n-1);
+}
+console.log(powerOf(2,3));
+
+//Advanced Recursion:
+const myself = {
+    name: 'Max',
+    friends: [
+        {
+            name: 'Robert',
+            friends: [
+                {
+                    name: 'Cally',
+                },
+                {
+                    name: 'Susan',
+                }
+            ]
+        },
+        {
+            name: 'Charles',
+        }
+    ]
+}   
+
+
+function getFriendNames(person) {
+    const collectedFriends = [];
+
+    if(!person.friends) {
+        return [];
+    }
+    
+    for(const friend of person.friends) {
+        collectedFriends.push(friend.name);
+        collectedFriends.push(...getFriendNames(friend));
+    }
+    return collectedFriends;
+} 
+
+console.log(getFriendNames(myself));
