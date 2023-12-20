@@ -8,7 +8,7 @@ const getPosition = (opt) => {
       resolve(success);
     },
     (error)=>{
-  
+      reject(error);
     },
     opt);
   });
@@ -27,10 +27,16 @@ const setTimer = duration => {
 function trackUserHandler() {
   //Promise chaining
   let positionData;
-  getPosition().then(pos=>{
+  getPosition()
+  .then(pos=>{
     positionData = pos;
     return setTimer(2000);
-  }).then(data => {
+  })
+  .catch((err)=>{
+    console.log(err);
+    return 'error occured!!!';
+  })
+  .then(data => {
     console.log(data, positionData);
   })
   // navigator.geolocation.getCurrentPosition(
