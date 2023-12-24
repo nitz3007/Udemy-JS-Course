@@ -25,7 +25,7 @@ const setTimer = duration => {
 }
 
 function trackUserHandler() {
-  //Promise chaining
+  // Promise chaining
   let positionData;
   getPosition()
   .then(pos=>{
@@ -39,6 +39,8 @@ function trackUserHandler() {
   .then(data => {
     console.log(data, positionData);
   })
+
+
   // navigator.geolocation.getCurrentPosition(
   //   posDetail => {
   //     setTimer(2000).then(data => {
@@ -55,4 +57,19 @@ function trackUserHandler() {
   console.log('Getting position...')
 }
 
-button.addEventListener('click', trackUserHandler);
+async function trackUserHandler2() {
+  let posData;
+  let timerData;
+
+  try {
+    posData = await getPosition();
+    timerData = await setTimer(2000);
+  } catch(error) {
+    console.log(error);
+  }
+  
+
+  console.log(posData, timerData);
+}
+
+button.addEventListener('click', trackUserHandler2);
