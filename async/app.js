@@ -72,4 +72,17 @@ async function trackUserHandler2() {
   console.log(posData, timerData);
 }
 
+
+Promise.race([getPosition(), setTimer(1000)]).then(data =>
+    console.log(data)
+);
+
+Promise.all([getPosition(), setTimer(1000)]).then(promiseData => 
+    console.log(promiseData)
+  );
+
+Promise.allSettled([getPosition(), setTimer(1000)]).then(promiseData => 
+  console.log(promiseData)
+);
+
 button.addEventListener('click', trackUserHandler2);
