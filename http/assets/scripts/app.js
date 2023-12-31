@@ -1,11 +1,23 @@
 const listElement = document.querySelector('.posts');
 const postTemplate = document.querySelector('#single-post');
+const form = document.querySelector('#new-post form');
+const fetchButton = document.querySelector('#available-posts button');
 
-const xhr = new XMLHttpRequest();
-xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts');
-xhr.responseType = 'json';
-xhr.onload = function() {
-    const listOfPosts = xhr.response;
+const sendHttpRequest = (method, url, data) => {
+    const promise = new Promise((resolve, reject)=>{
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+            resolve(xhr.response);
+        }
+        xhr.send(JSON.stringify(data));
+    });
+    return promise;
+}
+
+const fetchPosts = async() => {
+    const listOfPosts = await sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/posts');
     for(const post of listOfPosts) {
         const postEl = document.importNode(postTemplate.content, true);
         postEl.querySelector('h2').textContent = post.title.toUpperCase();
@@ -13,4 +25,21 @@ xhr.onload = function() {
         listElement.append(postEl);
     }
 }
-xhr.send();
+
+const createPost = async(title, body) => {
+    const userId = Math.random();
+    const post = {
+        title: title,
+        body: body,
+        userId: userId,
+    }
+    sendHttpRequest('POST', 'https://jsonplaceholder.typicode.com/posts', post)
+}
+
+fetchButton.addEventListener('click', fetchPosts);
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const title = event.currentTarget.querySelector('#title').value;
+    const body = event.currentTarget.querySelector('#content').value;
+    createPost(title, body);
+})
