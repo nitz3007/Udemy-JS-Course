@@ -85,4 +85,4 @@ Promise.allSettled([getPosition(), setTimer(1000)]).then(promiseData =>
   console.log(promiseData)
 );
 
-button.addEventListener('click', trackUserHandler2);
+button.addEventListener('click', trackUserHandler);
